@@ -2,7 +2,7 @@
 
 #define INPUT_DIR "/dev/input/"
 
-static int is_char_device(const struct dirent *file) {
+int is_char_device(const struct dirent *file) {
     struct stat filestat;
     char file_path[512];
     int err;
