@@ -33,10 +33,9 @@ char *get_keyboard_event_file(void) {
         int32_t kbd_bitmap = KEY_A | KEY_B | KEY_C | KEY_Z;
 
         snprintf(file_path, sizeof(file_path), "%s%s", INPUT_DIR, event_files[i]->d_name);
-        fd = open(file_path, O_RDONLY);
 
-        if (fd == -1) {
-            perror("open");
+        if ((fd = open(file_path, O_RDONLY)) == -1) {
+            syslog(LOG_NOTICE, "open: %m");
             continue;
         }
 

