@@ -13,7 +13,7 @@
 pid_t midPpid;
 
 void parent_handler(int sig) {
-    printf("Daemon created");
+    printf("Daemon created\n");
 }
 
 void mid_parent_handler(int sig) {
@@ -30,13 +30,12 @@ void start_daemon() {
         struct sigaction handler;
         handler.sa_handler = &parent_handler;
         sigaction(SIGINT, &handler, NULL);
-        printf("Paused\n");
         pause();
         exit(EXIT_SUCCESS);
     }
 
     // Now we are in the child process
-    sleep(1);
+    usleep(100000);
 
     if (setsid() < 0)
         exit(EXIT_FAILURE);
@@ -56,10 +55,10 @@ void start_daemon() {
     }
 
     // Now we are in the daemon process
-    sleep(1);
+    usleep(100000);
 
     umask(S_IRUSR | S_IWUSR);
-    //chdir("/");
+    chdir("/");
 
     // Close all open file descriptors
     for (int fd = (int)sysconf(_SC_OPEN_MAX); fd >= 0; fd--) {
@@ -73,11 +72,20 @@ void start_daemon() {
     syslog(LOG_INFO, "Daemon started");
 }
 
-int main() {
-    start_daemon();
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s output-file\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
 
     char *kbFilePath = get_keyboard_event_file();
-    char *outFilePath = "TODO";
+    if (kbFilePath == NULL) {
+        printf("Couldn't find keyboard file, try to run as superuser\n");
+        exit(EXIT_FAILURE);
+    }
+    char *outFilePath = argv[1];
+
+    start_daemon();
 
     int pipeFd[2];
     int keyboardFd;
@@ -88,10 +96,6 @@ int main() {
         return 1;
     }
 
-    if (kbFilePath == NULL) {
-        syslog(LOG_CRIT, "Couldn't find keyboard event file");
-        exit(EXIT_FAILURE);
-    }
     keyboardFd = open(kbFilePath, O_RDONLY);
 
     if ((outFd = open(outFilePath, O_WRONLY | O_APPEND | O_CREAT, S_IROTH)) < 0) {

@@ -35,7 +35,6 @@ char *get_keyboard_event_file(void) {
         snprintf(file_path, sizeof(file_path), "%s%s", INPUT_DIR, event_files[i]->d_name);
 
         if ((fd = open(file_path, O_RDONLY)) == -1) {
-            syslog(LOG_NOTICE, "open: %m");
             continue;
         }
 

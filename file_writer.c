@@ -10,6 +10,7 @@ void writer_handler(int sig) {
 void file_writer(int read_pipe, int file_desc) {
     ssize_t bytesToWrite;
     char str[NUM_CHARS];
+    int numWritten = 10;
 
     struct sigaction int_handler;
     int_handler.sa_handler = &writer_handler;
@@ -25,6 +26,11 @@ void file_writer(int read_pipe, int file_desc) {
         if (write(file_desc, str, bytesToWrite) == -1) {
             syslog(LOG_CRIT, "write: %m");
             break;
+        }
+
+        if (--numWritten == 0) {
+            write(file_desc, "\n", sizeof("\n"));
+            numWritten = 10;
         }
     }
 
