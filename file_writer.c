@@ -1,5 +1,7 @@
 #include "file_writer.h"
 
+#define NUM_CHARS 64
+
 int keepWriting = 1;
 
 void writer_handler(int sig) {

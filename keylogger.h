@@ -9,11 +9,8 @@
 #include <string.h>
 #include <syslog.h>
 
-#define NUM_EVENTS 128
-#define NUM_KEYCODES 71
-
 /**
- * Captures keystrokes by reading from the keyboard resource and writes them to
+ * Captures keystrokes by reading from the keyboard event file and writes them to
  * a pipe. Continues reading until SIGINT or SIGPIPE is received.
  *
  * @param keyboard The file descriptor for the keyboard input file

@@ -8,8 +8,6 @@
 #include <stdio.h>
 #include <syslog.h>
 
-#define NUM_CHARS 64
-
 /**
  * Writes text received from a pipe into the specified file.
  *

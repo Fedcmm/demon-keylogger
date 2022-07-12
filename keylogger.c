@@ -1,5 +1,8 @@
 #include "keylogger.h"
 
+#define NUM_EVENTS 128
+#define NUM_KEYCODES 71
+
 const char *keycodes[] = {
         "RESERVED",
         "ESC",

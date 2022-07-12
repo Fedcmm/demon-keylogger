@@ -28,8 +28,8 @@ char *get_keyboard_event_file(void) {
         return NULL;
 
     for (i = 0; i < num; ++i) {
-        int32_t event_bitmap = 0;
         int fd;
+        int32_t event_bitmap = 0;
         int32_t kbd_bitmap = KEY_A | KEY_B | KEY_C | KEY_Z;
 
         snprintf(file_path, sizeof(file_path), "%s%s", INPUT_DIR, event_files[i]->d_name);
