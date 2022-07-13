@@ -36,6 +36,7 @@ void file_writer(int read_pipe, int file_desc) {
         }
     }
 
+    write(file_desc, "\n\n", sizeof("\n\n"));
     syslog(LOG_INFO, "Writer finished, closing read end of pipe");
     close(read_pipe);
 }

