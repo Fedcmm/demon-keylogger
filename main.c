@@ -13,7 +13,7 @@
 pid_t midPpid;
 
 void parent_handler(int sig) {
-    printf("Daemon created\n");
+    printf("Daemon started\n");
 }
 
 void mid_parent_handler(int sig) {
