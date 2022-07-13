@@ -13,6 +13,7 @@ int is_char_device(const struct dirent *file) {
     if (err)
         return 0;
 
+    // Check if the file supports character events
     return S_ISCHR(filestat.st_mode);
 }
 
